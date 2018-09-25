@@ -3,9 +3,6 @@ use hex;
 use std::collections::HashMap;
 use std::str::from_utf8;
 
-// this isn't a great implementation, need to refractor
-// with a letter frequency counter or something
-
 pub fn rank_char_frequency(data: &Vec<u8>) -> i32 {
     // i took this from https://laconicwolf.com/2018/05/29/cryptopals-challenge-3-single-byte-xor-cipher-in-python/
     // this is a HashMap of the character frequency in english
@@ -44,7 +41,7 @@ pub fn rank_char_frequency(data: &Vec<u8>) -> i32 {
     let message = from_utf8(data);
     let message = match message {
         Ok(m) => m.to_lowercase(),
-        Err(e) => String::from("fail"),
+        Err(e) => String::from(""),
     };
     for l in message.chars() {
         if let Some(i) = character_frequency.get::<str>(&l.to_string()) {
@@ -75,7 +72,11 @@ pub fn single_byte_xor_cipher(data: &str) -> String {
         // println!("char_score: {:?}", char_score);
         if char_score > top_score {
             top_score = char_score;
-            phrase = String::from_utf8(xored).unwrap();
+            let thing = String::from_utf8(xored);
+            phrase = match thing {
+                Ok(x) => x,
+                Err(error) => String::from(""),
+            };
         }
     }
     println!("{:?}", phrase);
