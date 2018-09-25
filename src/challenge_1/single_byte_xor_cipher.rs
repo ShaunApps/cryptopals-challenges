@@ -41,26 +41,25 @@ pub fn rank_char_frequency(data: &Vec<u8>) -> i32 {
         .cloned()
         .collect();
     let mut score: i32 = 0;
-    data.iter()
-        .map(|&x| {
-            let letter = from_utf8(&[x]);
-            let letter = match letter {
-                Ok(l) => l.to_lowercase(),
-                Err(e) => String::from("fail"),
-            };
-            if let Some(i) = character_frequency.get::<str>(&letter) {
-                score += i;
-            }
-        })
-        .collect::<()>();
+    let message = from_utf8(data);
+    let message = match message {
+        Ok(m) => m.to_lowercase(),
+        Err(e) => String::from("fail"),
+    };
+    for l in message.chars() {
+        if let Some(i) = character_frequency.get::<str>(&l.to_string()) {
+            score += i;
+        }
+    }
+
     score
 }
 
 pub fn single_byte_xor_cipher(data: &str) -> String {
     let data_as_bytes = hex::decode(data).unwrap();
     let length = data_as_bytes.len();
-    let top_score: i32 = 0;
-    let phrase: String = "".to_string();
+    let mut top_score: i32 = 0;
+    let mut phrase: String = "".to_string();
     for byte in 0..=255 {
         let xored: Vec<_> = data_as_bytes.iter().map(|&x| x ^ byte).collect();
         // here is a second way to XOR it
@@ -73,11 +72,13 @@ pub fn single_byte_xor_cipher(data: &str) -> String {
         //         .collect(),
         // ).unwrap();
         let char_score = rank_char_frequency(&xored);
+        // println!("char_score: {:?}", char_score);
         if char_score > top_score {
-            let top_score = char_score;
-            let phrase = String::from_utf8(xored);
+            top_score = char_score;
+            phrase = String::from_utf8(xored).unwrap();
         }
     }
+    println!("{:?}", phrase);
     phrase
 }
 
