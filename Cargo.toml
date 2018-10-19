@@ -7,3 +7,5 @@ authors = ["kingdavid <shaun.apps@gmail.com>"]
 hex = "0.3.2"
 base64 = "0.9.3"
 bit-vec = "0.5.0"
+rust-crypto = "0.2.36"
+rand = "0.5.5"
