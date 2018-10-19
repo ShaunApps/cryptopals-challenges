@@ -7,15 +7,14 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::io::BufRead;
 use std::io::BufReader;
+use std::str;
 
 // AES in ECB mode
 fn decrypt(
     encrypted_data: &[u8],
     key: &[u8],
-    iv: &[u8],
 ) -> Result<Vec<u8>, symmetriccipher::SymmetricCipherError> {
-    let mut decryptor =
-        aes::cbc_decryptor(aes::KeySize::KeySize256, key, iv, blockmodes::PkcsPadding);
+    let mut decryptor = aes::ecb_decryptor(aes::KeySize::KeySize256, key, blockmodes::NoPadding);
 
     let mut final_result = Vec::<u8>::new();
     let mut read_buffer = buffer::RefReadBuffer::new(encrypted_data);
@@ -60,10 +59,10 @@ mod tests {
         let key = b"YELLOW SUBMARINE";
 
         let mut iv: [u8; 8] = [0; 8];
-        // let mut rng = OsRng::new().ok().unwrap();
-        // rng.fill_bytes(&mut iv);
+        let mut rng = OsRng::new().ok().unwrap();
+        rng.fill_bytes(&mut iv);
 
-        let decrypted_data = decrypt(&cipher, key, &iv).ok().unwrap();
+        let decrypted_data = decrypt(&cipher, key).ok().unwrap();
         println!("{:?}", String::from_utf8(decrypted_data).unwrap());
     }
 
