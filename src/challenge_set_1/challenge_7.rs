@@ -14,7 +14,7 @@ fn decrypt(
     encrypted_data: &[u8],
     key: &[u8],
 ) -> Result<Vec<u8>, symmetriccipher::SymmetricCipherError> {
-    let mut decryptor = aes::ecb_decryptor(aes::KeySize::KeySize256, key, blockmodes::NoPadding);
+    let mut decryptor = aes::ecb_decryptor(aes::KeySize::KeySize128, key, blockmodes::NoPadding);
 
     let mut final_result = Vec::<u8>::new();
     let mut read_buffer = buffer::RefReadBuffer::new(encrypted_data);
@@ -48,19 +48,20 @@ mod tests {
         let mut f = File::open("1_challenge_7.txt").unwrap();
         let mut buf_reader = BufReader::new(f);
 
-        let mut buf = Vec::new();
+        let mut buf = Vec::<u8>::new();
 
         for line in buf_reader.lines() {
             buf.extend(line.unwrap().into_bytes().iter().cloned())
         }
 
         let cipher = base64::decode(&buf).unwrap();
+        // println!("{:?}", cipher);
 
         let key = b"YELLOW SUBMARINE";
 
-        let mut iv: [u8; 8] = [0; 8];
-        let mut rng = OsRng::new().ok().unwrap();
-        rng.fill_bytes(&mut iv);
+        // let mut iv: [u8; 8] = [0; 8];
+        // let mut rng = OsRng::new().ok().unwrap();
+        // rng.fill_bytes(&mut iv);
 
         let decrypted_data = decrypt(&cipher, key).ok().unwrap();
         println!("{:?}", String::from_utf8(decrypted_data).unwrap());
