@@ -2,8 +2,11 @@ extern crate base64;
 extern crate crypto;
 extern crate hex;
 extern crate rand;
+extern crate rustc_serialize; //TODO: move to serde
 
 pub mod challenge_set_1;
+pub mod challenge_set_2;
+pub mod utils;
 
 use challenge_set_1::detect_single_char_xor::detect_sing_char_xor;
 use challenge_set_1::repeating_key_xor::repeating_key_xor;
